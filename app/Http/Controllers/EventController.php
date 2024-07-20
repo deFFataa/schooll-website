@@ -48,15 +48,13 @@ class EventController extends Controller
     public function update(Request $request, Event $event)
     {
         $attributes = $request->validate([
-            'thumbnail' => ['required'],
+            'thumbnail' => ['sometimes', 'image'],
             'title' => ['required'],
             'content' => ['required'],
             'starting_date' => ['required'],
             'ending_date' => ['required', 'after_or_equal:starting_date'],
         ]);
-
-        // dd($attributes);
-    
+   
         if ($request->hasFile('thumbnail')) {
             $thumbnailPath = $request->file('thumbnail')->store('event_thumbnail', 'public');
     
@@ -65,11 +63,15 @@ class EventController extends Controller
             if ($event->thumbnail) {
                 Storage::disk('public')->delete($event->thumbnail);
             }
+        } else {
+            $attributes['thumbnail'] = $event->thumbnail;
         }
+
+        // dd($attributes);
     
         $event->update($attributes);
     
-        return redirect('/events')->with('success', 'An event was edited successfully.');
+        return redirect('/events/edit/' . $event->id)->with('success', 'This event was edited successfully.');
     }
 
     public function destroy(Event $event){
@@ -78,5 +80,13 @@ class EventController extends Controller
         return redirect('/events')->with('danger', 'An event was successfully deleted');
     }
     
+    public function search(){
+        $query = request('q');
+        $events = Event::query()
+            ->where('title', 'LIKE', '%'.$query.'%')
+            ->paginate(10);
+        
+        return view('admin.event.search', ['events' => $events, 'query' => $query]);
+    }
     
 }

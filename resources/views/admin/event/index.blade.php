@@ -16,10 +16,12 @@
                 <div class="mb-3">
                     <x-alert-message />
                 </div>
-                <div>
-                    {{-- <img src="https://placehold.co/1080x400" alt="thumbnail"> --}}
-                </div>
-                <div class="rounded-lg overflow-hidden border border-gray-300">
+                <form action="/search-events" method="GET" class="flex">
+                    <input type="text" name="q"
+                        class="text-gray-500 border max-w-lg w-full border-gray-300 py-2 px-4 rounded-lg"
+                        placeholder="Search...">
+                </form>
+                <div class="rounded-lg overflow-hidden border mt-3 border-gray-300">
                     <table class="table-auto w-full text-sm">
                         <thead class="bg-green-600 text-white">
                             <tr class="">
@@ -36,14 +38,17 @@
                                 $count = 1;
                             @endphp
                             @foreach ($events as $event)
-                                <tr class="">
+                                @php
+                                    $isEven = $count % 2 == 0;
+                                @endphp
+                                <tr class="{{ $isEven ? 'bg-gray-100' : '' }}">
                                     <td class="p-3">{{ $count++ }}</td>
                                     <td class="p-3">{{ $event->title }}</td>
                                     <td class="p-3">
                                         {{ Illuminate\Support\Str::limit($event->content, 25) }}
                                     </td>
-                                    <td class="p-3">{{ $event->starting_date }}</td>
-                                    <td class="p-3">{{ $event->ending_date }}</td>
+                                    <td class="p-3">{{ Illuminate\Support\Carbon::parse($event->starting_date)->format('F j, Y - g:ia') }}</td>
+                                    <td class="p-3">{{ Illuminate\Support\Carbon::parse($event->ending_date)->format('F j, Y - g:ia') }}</td>
                                     <td class="p-3">
                                         <a href="/events/edit/{{ $event->id }}" class="text-gray-500">
                                             <i class="fa-solid fa-pen-to-square"></i>

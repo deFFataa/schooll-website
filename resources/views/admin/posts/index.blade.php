@@ -16,7 +16,12 @@
                 <div class="mb-3">
                     <x-alert-message />
                 </div>
-                <div class="rounded-lg overflow-hidden border border-gray-300">
+                <form action="/search-post" method="GET" class="flex">
+                    <input type="text" name="q"
+                        class="text-gray-500 border max-w-lg w-full border-gray-300 py-2 px-4 rounded-lg"
+                        placeholder="Search...">
+                </form>
+                <div class="rounded-lg overflow-hidden border mt-3 border-gray-300">
                     <table class="table-auto w-full text-sm">
                         <thead class="bg-green-600 text-white">
                             <tr class="">
@@ -33,7 +38,10 @@
                                 $count = 1;
                             @endphp
                             @foreach ($posts as $post)
-                                <tr class="">
+                                @php
+                                    $isEven = $count % 2 == 0;
+                                @endphp
+                                <tr class="{{ $isEven ? 'bg-gray-100' : '' }}">
                                     <td class="p-3">{{ $count++ }}</td>
                                     <td class="p-3">{{ $post->author_name }}</td>
                                     <td class="p-3">{{ $post->title }}</td>
@@ -51,11 +59,9 @@
                         </tbody>
                     </table>
                 </div>
-
                 <div class="mt-4">
                     {{ $posts->links() }}
                 </div>
-
             </x-box>
         </div>
     </div>

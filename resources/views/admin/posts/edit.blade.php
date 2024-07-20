@@ -56,7 +56,6 @@
                         </div>
                     </div>
                 </form>
-
                 <x-modal name="confirm-post-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
                     <form method="post" action="/post/{{ $posts->id }}" class="p-6 grid place-items-center">
                         @csrf

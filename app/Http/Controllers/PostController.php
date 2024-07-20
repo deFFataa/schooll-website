@@ -62,4 +62,13 @@ class PostController extends Controller
 
         return redirect('/post')->with('danger', 'A post was deleted successfully.');
     }
+
+    public function search(){
+        $query = request('q');
+        $post = Post::query()
+            ->where('title', 'LIKE', '%'.$query.'%')
+            ->paginate(10);
+        
+        return view('admin.posts.search', ['posts' => $post, 'query' => $query]);
+    }
 }
