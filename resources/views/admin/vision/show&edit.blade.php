@@ -16,7 +16,7 @@
                     @method('PATCH')
                     <div>
                         <x-input-label for="content" class="text-lg">Content</x-input-label>
-                        <textarea name="content" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" id="content" cols="60" rows="5">{{ $vision }}</textarea>
+                        <textarea name="content" class="border-gray-300 w-full max-w-xl focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" id="content" rows="5">{{ $vision }}</textarea>
                         <x-input-error :messages="$errors->get('content')" class="mt-2" />
                     </div>
                     <x-primary-button>Save</x-primary-button>

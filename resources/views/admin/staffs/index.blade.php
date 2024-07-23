@@ -22,7 +22,7 @@
                         placeholder="Search...">
                 </form>
                 <div>
-                    <div class="rounded-lg overflow-hidden border mt-3 border-gray-300">
+                    <div class="rounded-lg overflow-hidden border mt-3 border-gray-300 overflow-x-auto">
                         @if (count($staff) == 0)
                             <div class="p-10">
                                 No Records Yet.
@@ -35,7 +35,6 @@
                                         <th class="text-start p-3">Name</th>
                                         <th class="text-start p-3">Position</th>
                                         <th class="text-start p-3">Type</th>
-                                        <th class="text-start p-3">Advisee</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -52,13 +51,6 @@
                                             <td class="p-3">{{ $staffs->name }}</td>
                                             <td class="p-3">{{ $staffs->position }}</td>
                                             <td class="p-3">{{ $staffs->type }}</td>
-                                            <td class="p-3">
-                                                @if (!empty($staffs->advisee))
-                                                    {{ $staffs->advisee }}
-                                                @else
-                                                    None
-                                                @endif
-                                            </td>
                                             <td class="p-3">
                                                 <a href="/staff/edit/{{ $staffs->id }}" class="text-gray-500">
                                                     <i class="fa-solid fa-pen-to-square"></i>

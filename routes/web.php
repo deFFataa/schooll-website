@@ -5,12 +5,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\VisionController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\SiteController;
 use App\Http\Controllers\MissionController;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Route::get('/dashboard', function () {
     return view('admin.dashboard');
@@ -52,6 +49,14 @@ Route::post('/staff/add', [StaffController::class, 'store'])->middleware('auth')
 Route::get('/staff/edit/{staff}', [StaffController::class, 'edit'])->middleware('auth');
 Route::patch('/staff/edit/{staff}', [StaffController::class, 'update'])->middleware('auth');
 Route::delete('/staff/{staff}', [StaffController::class, 'destroy'])->middleware('auth');
+
+Route::get('/site', [SiteController::class, 'index'])->name('site');
+Route::get('/site/about-us',[SiteController::class, 'aboutUs'])->name('site/about-us');
+Route::get('/site/news',[SiteController::class, 'news'])->name('site/news');
+Route::get('/site/events',[SiteController::class, 'events'])->name('site/events');
+Route::get('/site/staff',[SiteController::class, 'staffs'])->name('site/staff');
+
+Route::get('/news/{id}',[SiteController::class, 'newsRead']);
 
 
 require __DIR__.'/auth.php';

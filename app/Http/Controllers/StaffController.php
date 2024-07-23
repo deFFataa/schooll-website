@@ -35,7 +35,6 @@ class StaffController extends Controller
             'name' => ['required'],
             'position' => ['required'],
             'type' => ['required'],
-            'advisee' => ['sometimes'],
         ]);
 
         $avatarPath = $request->file('avatar')->store('avatars', 'public');
@@ -46,7 +45,7 @@ class StaffController extends Controller
 
         Staff::create($attributes);
 
-        return redirect('/staff')->with('success', 'A staff was added successfully.');
+        return redirect('/staff/add')->with('success', 'A staff was added successfully.');
         
     }
 

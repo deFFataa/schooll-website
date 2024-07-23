@@ -67,13 +67,6 @@
                             id="type" />
                         <x-input-error :messages="$errors->get('type')" class="mt-2" />
                     </div>
-                    <div>
-                        <x-input-label for="advisee" class="text-lg">Advisee <span
-                                class="text-gray-400 italic text-xs">(Optional)</span></x-input-label>
-                        <x-text-input class="max-w-md w-full" name="advisee" type="text" id="advisee"
-                            value="{{ $staff->advisee }}" />
-                        <x-input-error :messages="$errors->get('advisee')" class="mt-2" />
-                    </div>
                     <div class="flex">
                         <div class="flex-1">
                             <x-danger-button x-data=""

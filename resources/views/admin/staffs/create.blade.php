@@ -11,6 +11,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <x-box>
+                <x-alert-message />
                 <header>
                     <h2 class="text-lg font-medium text-gray-900">
                         Fill out the forms.
@@ -63,12 +64,6 @@
                         <x-text-input class="max-w-md w-full" name="type" type="text"
                             id="type" />
                         <x-input-error :messages="$errors->get('type')" class="mt-2" />
-                    </div>
-                    <div>
-                        <x-input-label for="advisee" class="text-lg">Advisee <span class="text-gray-400 italic text-xs">(Optional)</span></x-input-label>
-                        <x-text-input class="max-w-md w-full" name="advisee" type="text"
-                            id="advisee" />
-                        <x-input-error :messages="$errors->get('advisee')" class="mt-2" />
                     </div>
                     <div class="flex justify-end">
                         <div>

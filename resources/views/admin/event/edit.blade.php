@@ -60,8 +60,8 @@
                     </div>
                     <div>
                         <x-input-label for="content" class="text-lg">Content</x-input-label>
-                        <textarea name="content" class="border-gray-300 focus:border-green-500 focus:ring-green-500 rounded-md shadow-sm"
-                            id="content" cols="51" rows="20"> {{ $events->content }}</textarea>
+                        <textarea name="content" class="border-gray-300 focus:border-green-500 focus:ring-green-500 w-full rounded-md shadow-sm"
+                            id="content" rows="10"> {{ $events->content }}</textarea>
                         <x-input-error :messages="$errors->get('content')" class="mt-2" />
                     </div>
                     <div>
