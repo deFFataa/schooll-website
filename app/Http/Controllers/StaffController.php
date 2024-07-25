@@ -31,16 +31,19 @@ class StaffController extends Controller
      */
     public function store(Request $request){
         $attributes = $request->validate([
-            'avatar' => ['required'],
+            'avatar' => ['sometimes', 'image'],
             'name' => ['required'],
             'position' => ['required'],
             'type' => ['required'],
         ]);
 
-        $avatarPath = $request->file('avatar')->store('avatars', 'public');
-    
-        $attributes['avatar'] = $avatarPath;
-        
+        if ($request->hasFile('avatar')) {
+
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $attributes['avatar'] = $avatarPath;
+
+        } 
+                
         // dd($attributes);
 
         Staff::create($attributes);

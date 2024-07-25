@@ -29,14 +29,14 @@
 
             <!-- Search -->
             <div class="hidden sm:flex sm:items-center sm:ms-6 text-gray-800">
-                <form action="#">
+                <form action="/site/search" method="GET">
                     <label for="search">
-                        <input id="search" type="text"
+                        <input id="search" type="text" name="q"
                             class="py-2 px-3 w-full text-sm border-gray-300 bg-transparent placeholder:text-white/70 focus:border-green-100 focus:ring-white text-white rounded-md hidden md:block"
-                            placeholder="Search...">
+                            placeholder="Search..." required>
                     </label>
                 </form>
-            </div>
+            </div>            
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center md:hidden">
@@ -57,10 +57,10 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden md:hidden">
         <div class="pt-2 px-4 pb-3 space-y-2 flex flex-col flex-wrap border-b border-white">
-            <form action="#">
-                <input type="text"
-                    class="py-1 px-3 text-sm border-gray-300 bg-transparent w-full placeholder:text-white/70 focus:border-green-100 focus:ring-white text-white rounded-md"
-                    placeholder="Search...">
+            <form action="/site/search" method="GET">
+                <input type="text" name="q"
+                class="py-2 px-3 w-full text-sm border-gray-300 bg-transparent placeholder:text-white/70 focus:border-green-100 focus:ring-white text-white rounded-md"
+                placeholder="Search..." required>
             </form>
             <x-nav-link-site :href="route('site/about-us')" :active="request()->routeIs('site/about-us')">
                 {{ __('About Us') }}

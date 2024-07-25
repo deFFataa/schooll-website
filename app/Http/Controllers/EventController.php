@@ -6,11 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\File;
 use App\Models\Event;
+use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
     public function show(){
-        $events = Event::latest()->paginate(5);
+        $events = Event::latest()->paginate(10);
         
         return view('admin.event.index', ['events' => $events]);
     }
@@ -26,15 +27,22 @@ class EventController extends Controller
 
     public function store(Request $request){
         $attributes = $request->validate([
-            'thumbnail' => ['required'],
+            'thumbnail' => ['sometimes'],
             'title' => ['required'],
             'content' => ['required'],
             'starting_date' => ['required'],
             'ending_date' => ['required', 'after_or_equal:starting_date'],
         ]);
-        $thumbnailPath = $request->file('thumbnail')->store('event_thumbnail', 'public');
-    
-        $attributes['thumbnail'] = $thumbnailPath;
+        
+        if ($request->hasFile('thumbnail')) {
+
+            $thumbnailPath = $request->file('thumbnail')->store('event_thumbnail', 'public');
+            $attributes['thumbnail'] = $thumbnailPath;
+
+        } 
+
+        $title = $attributes['title'];
+        $attributes['slug'] = Str::slug($title);
         $attributes['archived'] = false;
         
         // dd($attributes);

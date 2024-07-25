@@ -7,37 +7,56 @@ use App\Models\Post;
 use App\Models\Mission;
 use App\Models\Event;
 use App\Models\Staff;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class SiteController extends Controller
 {
     public function index()
     {
-        $latestNews = Post::latest('date')->first();
-        $news = Post::where('id', '!=', $latestNews->id)
-                    ->orderBy('date', 'DESC')
-                    ->take(5)
-                    ->get();
-        $events = Event::orderBy('date', 'DESC')
-                    ->take(5)
-                    ->get();
+        try {
+            $latestNews = Post::latest('date')->first();
     
-        return view('site.welcome', [
-            'latestNews' => $latestNews,
-            'news' => $news,
-            'events' => $events,
-        ]);
+            if ($latestNews) {
+                $news = Post::where('id', '!=', $latestNews->id)
+                            ->orderBy('date', 'DESC')
+                            ->take(5)
+                            ->get();
+            } else {
+                $news = collect();
+            }
+    
+            $events = Event::orderBy('date', 'DESC')
+                        ->take(5)
+                        ->get();
+    
+            return view('site.welcome', [
+                'latestNews' => $latestNews ?? $latestNews,
+                'news' => $news ?? $news,
+                'events' => $events ?? $events,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error fetching posts or events: ' . $e->getMessage());
+    
+            return view('site.welcome', [
+                'latestNews' => null,
+                'news' => null,
+                'events' => null,
+            ])->withErrors(['There was an error fetching the latest posts or events.']);
+        }
     }
     
     public function aboutUs()
     {
-        $vision = Vision::find(1)->value('content');
-        $mission = Mission::find(1)->value('content');
+
+        $vision = Vision::findOr(1, fn() => 'No Data Available');
+        $mission = Mission::findOr(1, fn() => 'No data available');
 
         return view('site.about-us', [
             'vision' => $vision,
-            'mission' => $mission,
+            'mission' => $mission 
         ]);
+
     }
 
     public function news()
@@ -50,30 +69,75 @@ class SiteController extends Controller
     public function events(){
         $events = Event::latest('date')
                         ->paginate(5);
-    return view('site.events', [ 'events' => $events ]);
+        return view('site.events', [ 'events' => $events ]);
     }
 
     public function staffs(){
 
-        $principal = Staff::where('type', '=' , 'Principal')->first();
+        try {
+            $principal = Staff::where('type', '=' , 'principal')->first();
 
-        $staffs = Staff::where('id', '!=', $principal->id)
-                        ->orderBy('position', 'ASC')
-                        ->get();
-    return view('site.staffs', [ 'staffs' => $staffs, 'principal' => $principal ]);
+            $staffs = Staff::where('id', '!=', $principal->id)
+                            ->orderBy('position', 'ASC')
+                            ->get();
+            return view('site.staffs', [ 'staffs' => $staffs, 'principal' => $principal ]);
+        } catch (\Throwable $th) {
+            \Log::error('Error fetching posts or events: ' . $th->getMessage());
+            return view('site.staffs', [ 'staffs' => null, 'principal' => null ]);
+        }
+
+
     }
 
-    public function newsRead($id){
-
-        $news = Post::where('id', '=', $id)->first();
+    public function newsRead($slug)
+    {
+        $news = Post::where('slug', $slug)->firstOrFail();
+    
         $otherNews = Post::where('id', '!=', $news->id)
-                        ->orderBy('date', 'DESC')
-                        ->limit(3)
-                        ->get();
-
-        // dd($news);
-
+                         ->orderBy('date', 'DESC')
+                         ->limit(3)
+                         ->get();
+    
         return view('site.read-news', ['news' => $news, 'otherNews' => $otherNews]);
-
     }
+
+    public function eventsRead($slug)
+    {
+        $events = Event::where('slug', $slug)->firstOrFail();
+    
+        $otherEvents = Event::where('id', '!=', $events->id)
+                         ->orderBy('date', 'DESC')
+                         ->limit(3)
+                         ->get();
+    
+        return view('site.read-events', ['events' => $events, 'otherEvents' => $otherEvents]);
+    }
+    
+    public function search(){
+        $query = trim(request('q'));
+        
+        if (empty($query)) {
+            return view('site.search', [
+                'events' => collect(),
+                'news' => collect(),
+                'query' => $query
+            ]);
+        }
+        
+        $events = Event::query()
+            ->where('title', 'LIKE', '%'.$query.'%')
+            ->get();
+        
+        $news = Post::query()
+            ->where('title', 'LIKE', '%'.$query.'%')
+            ->get();
+        
+        return view('site.search', [
+            'events' => $events,
+            'news' => $news,
+            'query' => $query
+        ]);
+    }
+    
+    
 }

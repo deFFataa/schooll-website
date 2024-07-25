@@ -15,6 +15,23 @@ class VisionController extends Controller
         return view('admin.vision.show&edit', ['vision' => $vision]);
     }
 
+    public function store(Request $request)
+    {
+        $attribute = $request->validate([
+            'name' => ['required'],
+            'content' => ['required'],
+        ]);
+
+        $store = Vision::create($attribute);
+
+        if(!$store){
+            return redirect('/vision')->with('danger', 'There was some error. Please try again.');
+        }
+
+        return redirect('/vision')->with('success', 'Mission was added successfully');
+
+    }
+
     public function update(Request $request)
     {
         $request->validate([

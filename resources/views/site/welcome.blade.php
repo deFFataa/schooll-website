@@ -30,20 +30,26 @@
             </div>
         </div>
     </div>
-    
+
     <!-- News -->
     <div class="h-auto px-40 py-10 max-md:px-5">
         <div>
             <h1 class="text-gray-800 text-2xl font-bold">Latest News</h1>
             <div class="divider divider-success mt-0 max-w-[50px]"></div>
 
-            <div class="mt-3 bg-white rounded-lg border border-gray-200 shadow-md p-5">
-                <div class="flex flex-wrap lg:gap-5">
-                    <div class="h-auto max-lg:w-full">
-                        <img src="https://placehold.co/600x300" class="w-full min-w-sm rounded-lg" alt="">
-                    </div>
-                    <div class="flex flex-col lg:py-2 max-md:py-3 flex-auto lg:basis-1/3">
-                        @if ($latestNews)
+            @if ($latestNews)
+                <div class="mt-3 bg-white rounded-lg border border-gray-200 shadow-md">
+                    <div class="flex flex-wrap lg:gap-5">
+                        <div class="w-100">
+                            @if (!empty($latestNews->thumbnail))
+                                <img src="{{ asset('storage/' . $latestNews->thumbnail) }}" alt=""
+                                    class="w-full max-w-xl h-full object-cover rounded-lg">
+                            @else
+                                <img src="{{ url('images/placeholder.png') }}"
+                                    class="w-full max-w-xl min-w-sm min-w-sm rounded-lg mx-auto" alt="">
+                            @endif
+                        </div>
+                        <div class="flex flex-col max-md:py-3 flex-auto lg:basis-1/3 p-5">
                             <div class="flex gap-2 text-gray-500">
                                 <div>{{ $latestNews->author_name }}</div>
                             </div>
@@ -59,17 +65,17 @@
                                 {{ Illuminate\Support\Str::limit($latestNews->content, 350) }}
                             </div>
                             <div class="flex justify-bottom mt-auto max-md:mt-5">
-                                <a href="news/{{ $latestNews->id }}"
+                                <a href="{{ url('site/news/' . Illuminate\Support\Str::slug($latestNews->title)) }}"
                                     class="text-green-600 text-sm hover:bg-green-200 font-bold rounded-lg py-2 px-4">
                                     Read More
                                 </a>
                             </div>
-                        @else
-                            <div>No latest news available.</div>
-                        @endif
+                        </div>
                     </div>
                 </div>
-            </div>
+            @else
+                <div>No latest news available.</div>
+            @endif
         </div>
         <div class="mt-10">
             <div class="flex">
@@ -77,25 +83,37 @@
                     <h1 class="text-gray-800 text-2xl font-bold">Other News</h1>
                     <div class="divider divider-success m-0 max-w-[50px]"></div>
                 </div>
-                <div class="">
-                    <a href="/site/news"
-                        class="text-green-600 text-sm hover:bg-green-200 font-bold rounded-lg py-2 px-4">
-                        See All
-                        <i class="fa-solid fa-arrow-right ms-2"></i>
-                    </a>
-                </div>
+                @if (count($news) >= 5)
+                    <div class="">
+                        <a href="/site/news"
+                            class="text-green-600 text-sm hover:bg-green-200 font-bold rounded-lg py-2 px-4">
+                            See All
+                            <i class="fa-solid fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                @endif
             </div>
             <div class="mt-3 inline-flex gap-2 w-full overflow-x-scroll pb-3 custom-scrollbar">
+                @if (count($news) == 0)
+                    <div>
+                        <div>No data available.</div>
+                    </div>
+                @endif
                 @foreach ($news as $new)
-                    <a href="/news/{{ $new->id }}"
+                    <a href="{{ url('site/news/' . Illuminate\Support\Str::slug($new->slug)) }}"
                         class="hover:shadow-xl shadow-md bg-white/50 hover:bg-white transition ease-in-out delay-50 rounded-lg h-[400px]">
-                        <div class="w-[280px] h-full border p-5 rounded-lg flex flex-col">
+                        <div class="w-[280px] h-full border rounded-lg flex flex-col">
                             <div class="flex flex-col flex-grow">
-                                <div class="h-auto">
-                                    <img src="https://placehold.co/300x200" class="w-full min-w-sm rounded-lg"
-                                        alt="">
+                                <div class="w-full max-w-lg max-h-[185px] overflow-hidden">
+                                    @if (!empty($new->thumbnail))
+                                        <img src="{{ asset('storage/' . $new->thumbnail) }}" alt=""
+                                            class="w-full max-w-xl h-full object-cover rounded-lg">
+                                    @else
+                                        <img src="{{ url('images/placeholder.png') }}"
+                                            class="w-full max-w-xl min-w-sm min-w-sm rounded-lg mx-auto" alt="">
+                                    @endif
                                 </div>
-                                <div class="flex flex-col lg:py-2 max-md:py-3 flex-grow">
+                                <div class="flex flex-col flex-grow p-5">
                                     <div class="flex flex-col gap-1 text-gray-500 text-sm">
                                         <div>
                                             {{ \Illuminate\Support\Carbon::parse($new->date)->format('M. j, Y') }}
@@ -103,16 +121,16 @@
                                     </div>
                                     <div class="text-base font-semibold my-2 text-green-600">
                                         <div>
-                                            {{ $new->title }}
+                                            {{ Illuminate\Support\Str::limit($new->title, 50) }}
                                         </div>
                                     </div>
                                     <div class="text-gray-700 text-xs flex-grow">
                                         {{ Illuminate\Support\Str::limit($new->content, 100) }}
                                     </div>
+                                    <div class="mt-auto text-gray-500 text-sm">
+                                        {{ $new->author_name }}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="mt-2 text-gray-500 text-sm">
-                                {{ $new->author_name }}
                             </div>
                         </div>
                     </a>
@@ -130,7 +148,7 @@
                 <h1 class="text-gray-800 text-2xl font-bold">Events</h1>
                 <div class="divider divider-success mt-0 max-w-[50px]"></div>
             </div>
-            @if (count($events) > 5)
+            @if (count($events) >= 5)
                 <div>
                     <a href="/site/events"
                         class="text-green-600 text-sm hover:bg-green-200 font-bold rounded-lg py-2 px-4">
@@ -141,17 +159,27 @@
             @endif
         </div>
         <div class="mt-3 inline-flex gap-2 w-full overflow-x-scroll pb-3 custom-scrollbar">
+            @if (count($news) == 0)
+                <div>
+                    <div>No data available.</div>
+                </div>
+            @endif
             @foreach ($events as $event)
-                <a href="/news/{{ $event->id }}"
+                <a href="{{ url('site/events/' . Illuminate\Support\Str::slug($event->slug)) }}"
                     class="hover:shadow-xl shadow-md bg-white/50 hover:bg-white transition ease-in-out delay-50 rounded-lg h-[400px]">
-                    <div class="w-[280px] h-full border p-5 rounded-lg flex flex-col">
+                    <div class="w-[280px] h-full border rounded-lg flex flex-col">
                         <div class="flex flex-col flex-grow">
-                            <div class="w-full h-[150px]">
-                                <img src="{{ asset('storage/' . $event->thumbnail) }}"
-                                    class="border object-cover w-full h-full rounded-lg" alt="">
+                            <div class="w-full max-w-lg max-h-[185px] overflow-hidden">
+                                @if (!empty($event->thumbnail))
+                                    <img src="{{ asset('storage/' . $event->thumbnail) }}" alt=""
+                                        class="w-full max-w-xl h-full object-cover rounded-lg">
+                                @else
+                                    <img src="{{ url('images/placeholder.png') }}"
+                                        class="w-full max-w-xl min-w-sm min-w-sm rounded-lg mx-auto" alt="">
+                                @endif
                             </div>
 
-                            <div class="flex flex-col lg:py-2 max-md:py-3 flex-grow">
+                            <div class="flex flex-col flex-grow p-5">
                                 <div class="flex flex-col gap-1 text-gray-500 text-sm">
                                     <div>
                                         {{ \Illuminate\Support\Carbon::parse($event->starting_date)->format('M. j, Y') . ' - ' . \Illuminate\Support\Carbon::parse($event->ending_date)->format('M. j, Y') }}
@@ -159,17 +187,17 @@
                                 </div>
                                 <div class="text-base font-semibold my-2 text-green-600">
                                     <div>
-                                        {{ $event->title }}
+                                        {{ Illuminate\Support\Str::limit($event->title, 50) }}
                                     </div>
                                 </div>
                                 <div class="text-gray-700 text-xs flex-grow">
                                     {{ Illuminate\Support\Str::limit($event->content, 100) }}
                                 </div>
-                            </div>
-                        </div>
-                        <div class="mt-2 text-gray-500 text-sm max-w-[101px]">
-                            <div class="text-green-600 text-sm hover:bg-green-200 font-bold rounded-lg py-2 px-4">
-                                Read More
+                                <div class="text-gray-500 text-sm max-w-[101px]">
+                                    <div class="text-green-600 text-sm hover:bg-green-200 font-bold rounded-lg py-2 px-4">
+                                        Read More
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

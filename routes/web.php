@@ -29,9 +29,11 @@ Route::patch('/post/edit/{post}', [PostController::class, 'update'])->middleware
 Route::delete('/post/{post}', [PostController::class, 'destroy'])->middleware('auth');
 
 Route::get('/vision', [VisionController::class, 'show'])->middleware('auth')->name('vision');
+Route::post('/vision', [VisionController::class, 'store'])->middleware('auth');
 Route::patch('/vision', [VisionController::class, 'update'])->middleware('auth');
 
 Route::get('/mission', [MissionController::class, 'show'])->middleware('auth')->name('mission');
+Route::post('/mission', [MissionController::class, 'store'])->middleware('auth');
 Route::patch('/mission', [MissionController::class, 'update'])->middleware('auth');
 
 Route::get('/events', [EventController::class, 'show'])->middleware('auth')->name('events');
@@ -56,7 +58,12 @@ Route::get('/site/news',[SiteController::class, 'news'])->name('site/news');
 Route::get('/site/events',[SiteController::class, 'events'])->name('site/events');
 Route::get('/site/staff',[SiteController::class, 'staffs'])->name('site/staff');
 
-Route::get('/news/{id}',[SiteController::class, 'newsRead']);
+Route::get('/site/news/{slug}',[SiteController::class, 'newsRead']);
+Route::get('/site/events/{slug}',[SiteController::class, 'eventsRead']);
+
+Route::get('/site/search',[SiteController::class, 'search']);
+
+
 
 
 require __DIR__.'/auth.php';

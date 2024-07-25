@@ -15,6 +15,23 @@ class MissionController extends Controller
         return view('admin.mission.show&edit', ['mission' => $mission]);
     }
 
+    public function store(Request $request)
+    {
+        $attribute = $request->validate([
+            'name' => ['required'],
+            'content' => ['required'],
+        ]);
+
+        $store = Mission::create($attribute);
+
+        if(!$store){
+            return redirect('/mission')->with('danger', 'There was some error. Please try again.');
+        }
+
+        return redirect('/mission')->with('success', 'Mission was added successfully');
+
+    }
+
     public function update(Request $request)
     {
         $request->validate([

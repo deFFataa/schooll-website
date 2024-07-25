@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('staff', function (Blueprint $table) {
             $table->id();
-            $table->string('avatar');
+            $table->string('avatar')->nullable();
             $table->string('name');
             $table->string('position');
-            $table->string('advisee')->nullable();
+            $table->string('type');
             $table->timestamps();
         });
     }

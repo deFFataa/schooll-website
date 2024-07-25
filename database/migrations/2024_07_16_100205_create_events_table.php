@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('thumbnail');
             $table->string('title');
+            $table->string('slug');
             $table->string('content');
             $table->dateTime('starting_date');
             $table->dateTime('ending_date');

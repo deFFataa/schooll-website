@@ -19,7 +19,6 @@ export default {
 
     plugins: [
         forms,
-        require('daisyui')
     ],
 
     daisyui: {

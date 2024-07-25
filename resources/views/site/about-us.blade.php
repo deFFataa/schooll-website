@@ -54,7 +54,12 @@
                             <div class="divider divider-success mt-0 max-w-[50px]"></div>
                         </div>
                         <div class="text-gray-700 mt-3 text-base">
-                            <p>{{ $vision }}</p>
+                            @if ($vision)
+                            <p>{{ $vision->content }}</p>
+
+                        @else
+                            <div>No data available.</div>
+                        @endif
                         </div>
                     </div>
                     <div class="h-auto w-full rounded-lg shadow-lg border-gray-300">
@@ -82,7 +87,12 @@
                         <div class="divider divider-success mt-0 max-w-[50px]"></div>
                     </div>
                     <div class="text-gray-700 mt-3 text-base">
-                        <p>{{ $mission }}</p>
+                        @if ($mission)
+                            <p>{{ $mission->content }}</p>
+
+                        @else
+                            <div>No data available.</div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -114,23 +124,31 @@
 </x-layout>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    console.log('Script loaded and DOM fully loaded');
-    let navbar = document.querySelector('.nav');
-    let lastScrollTop = 0;
-    navbar.classList.add('bg-transparent');
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Script loaded and DOM fully loaded');
+        let navbar = document.querySelector('.nav');
+        let lastScrollTop = 0;
+        navbar.classList.add('bg-transparent');
 
-    window.addEventListener('scroll', function () {
-        let scrollTop = document.documentElement.scrollTop;
+        window.addEventListener('scroll', function() {
+            let scrollTop = document.documentElement.scrollTop;
 
-        if (scrollTop > 20) {
-            if (scrollTop > lastScrollTop) {
-                // Scrolling down
-                navbar.classList.add('shadow-md');
-                navbar.classList.remove('bg-transparent');
-                navbar.classList.add('bg-green-600');
+            if (scrollTop > 20) {
+                if (scrollTop > lastScrollTop) {
+                    // Scrolling down
+                    navbar.classList.add('shadow-md');
+                    navbar.classList.remove('bg-transparent');
+                    navbar.classList.add('bg-green-600');
+                } else {
+                    // Scrolling up
+                    if (scrollTop === 0) {
+                        // Scrolled all the way to the top
+                        navbar.classList.remove('shadow-md');
+                        navbar.classList.remove('bg-green-600');
+                        navbar.classList.add('bg-transparent');
+                    }
+                }
             } else {
-                // Scrolling up
                 if (scrollTop === 0) {
                     // Scrolled all the way to the top
                     navbar.classList.remove('shadow-md');
@@ -138,17 +156,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     navbar.classList.add('bg-transparent');
                 }
             }
-        } else {
-            if (scrollTop === 0) {
-                // Scrolled all the way to the top
-                navbar.classList.remove('shadow-md');
-                navbar.classList.remove('bg-green-600');
-                navbar.classList.add('bg-transparent');
-            }
-        }
 
-        lastScrollTop = scrollTop;
+            lastScrollTop = scrollTop;
+        });
     });
-});
-
 </script>

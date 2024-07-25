@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
     
     public function show(){
-        $posts = Post::latest()->paginate(5);
+        $posts = Post::latest()->paginate(10);
         
         return view('admin.posts.index', ['posts' => $posts]);
     }
@@ -28,13 +30,23 @@ class PostController extends Controller
     public function store(Request $request){
                 
         $attributes = $request->validate([
+            'thumbnail' => ['sometimes', 'image'],
             'author_name' => ['required'],
             'date' => ['required'],
             'title' => ['required'],
             'content' => ['required'],
         ]);
 
+        if ($request->hasFile('thumbnail')) {
+
+            $thumbnailPath = $request->file('thumbnail')->store('news_thumbnail', 'public');
+            $attributes['thumbnail'] = $thumbnailPath;
+
+        } 
+
+        $title = $attributes['title'];
         $attributes['user_id'] = auth()->id();
+        $attributes['slug'] = Str::slug($title);
 
         Post::create($attributes);   
 
@@ -44,11 +56,24 @@ class PostController extends Controller
     public function update(Request $request, Post $post){
             
         $attributes = $request->validate([
+            'thumbnail' => ['sometimes'],
             'author_name' => ['required'],
             'date' => ['required'],
             'title' => ['required'],
             'content' => ['required'],
         ]);
+
+        if ($request->hasFile('thumbnail')) {
+            $thumbnailPath = $request->file('thumbnail')->store('news_thumbnail', 'public');
+    
+            $attributes['thumbnail'] = $thumbnailPath;
+    
+            if ($post->thumbnail) {
+                Storage::disk('public')->delete($post->thumbnail);
+            }
+        } else {
+            $attributes['thumbnail'] = $post->thumbnail;
+        }
 
         $attributes['user_id'] = auth()->id();
 

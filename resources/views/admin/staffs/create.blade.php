@@ -61,9 +61,13 @@
                     </div>
                     <div>
                         <x-input-label for="type" class="text-lg">Type</x-input-label>
-                        <x-text-input class="max-w-md w-full" name="type" type="text"
-                            id="type" />
+                        <select name="type" id="type" class="max-w-md w-full border-gray-300 focus:border-green-500 focus:ring-green-500 rounded-md shadow-sm text-gray-700">
+                            <option value="teacher" selected>Teacher</option>
+                            <option value="principal">Principal</option>
+                            <option value="staff">Staff</option>
+                        </select>
                         <x-input-error :messages="$errors->get('type')" class="mt-2" />
+
                     </div>
                     <div class="flex justify-end">
                         <div>

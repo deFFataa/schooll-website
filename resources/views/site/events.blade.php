@@ -6,38 +6,53 @@
             </span>
             <div class="divider divider-success mt-0 max-w-[50px]"></div>
         </div>
-        <div class="space-y-3">
-            @foreach ($events as $event)
-                <div class="shadow-md bg-white border-gray-300 hover:bg-gray-50 rounded-lg h-auto">
-                    <a href="events/{{ $event->id }}">
-                        <div class="flex max-sm:flex-wrap gap-x-6 p-5">
-                            <div class="min-w-[150px] min-h-[150px] md:max-w-[200px] max-sm:w-full max-sm:h-[100px]">
-                                <img src="{{ asset('storage/' . $event->thumbnail) }}" class="rounded-lg object-cover w-full h-full"
-                                    alt="">
-                            </div>
-
-                            <div class="flex flex-col lg:pt-2 max-md:pt-3 flex-grow">
-                                <div class="flex-grow">
-                                    <div class="flex gap-3 text-gray-500 text-sm">
-                                        {{ \Illuminate\Support\Carbon::parse($event->starting_date)->format('M. j, Y') . ' - ' . \Illuminate\Support\Carbon::parse($event->ending_date)->format('M. j, Y') }}
-                                    </div>
-                                    <div class="text-lg font-semibold my-2 text-green-600">
-                                        <div>
-                                            {{ $event->title }}
+        @if (!$events->isEmpty())
+            <div class="space-y-3">
+                @foreach ($events as $event)
+                    <div class="shadow-md bg-white border-gray-300 hover:bg-gray-50 rounded-lg h-auto">
+                        <a href="events/{{ $event->slug }}">
+                            <div class="md:flex">
+                                <div class="md:shrink-0">
+                                    @if (!empty($event->thumbnail))
+                                        <div class="w-full max-w-lg max-h-[340px] overflow-hidden">
+                                            <img src="{{ asset('storage/' . $event->thumbnail) }}" alt=""
+                                                class="w-full h-full object-cover rounded-lg">
                                         </div>
-                                    </div>
-                                    <div class="text-gray-700 text-sm flex-grow">
-                                        {{ Illuminate\Support\Str::limit($event->content, 100) }}
+                                    @else
+                                        <img src="{{ url('images/placeholder.png') }}"
+                                            class="w-full max-w-lg min-w-sm min-w-sm rounded-lg min-w-[150px] min-h-[150px] object-fill"
+                                            alt="">
+                                    @endif
+                                </div>
+
+                                <div class="p-8">
+                                    <div class="flex flex-col h-full">
+                                        <div class="uppercase tracking-wide text-sm text-gray-500 font-semibold">
+                                            {{ \Illuminate\Support\Carbon::parse($event->starting_date)->format('M. j, Y') . ' - ' . \Illuminate\Support\Carbon::parse($event->ending_date)->format('M. j, Y') }}
+                                        </div>
+                                        <div class="text-lg font-semibold my-2 text-green-600">
+                                            <div>
+                                                {{ $event->title }}
+                                            </div>
+                                        </div>
+                                        <div class="text-gray-700 text-sm flex-grow">
+                                            {{ Illuminate\Support\Str::limit($event->content, 100) }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
-                </div>
-            @endforeach
-        </div>
-        <div class="my-5">
-            {{ $events->links() }}
-        </div>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+            <div class="my-5">
+                {{ $events->links() }}
+            </div>
+        @else
+            <div class="mb-20">
+                No Records Found.
+            </div>
+        @endif
+
     </div>
 </x-layout>
